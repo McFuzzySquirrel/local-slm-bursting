@@ -1,0 +1,14 @@
+fastapi==0.104.1
+uvicorn==0.23.2
+llama-cpp-python==0.2.11
+sentence-transformers==2.2.2
+chromadb==0.4.13
+pypdf2==3.0.1
+streamlit==1.28.0
+pydantic==2.4.2
+python-multipart==0.0.6
+requests==2.31.0
+python-dotenv==1.0.0
+numpy==1.24.3
+azure-identity==1.14.0
+azure-storage-blob==12.18.3

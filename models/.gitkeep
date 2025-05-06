@@ -1,0 +1,2 @@
+# This file ensures the models directory is committed to Git
+# Download a GGUF model file and place it here (e.g., phi-2.Q4_K_M.gguf)

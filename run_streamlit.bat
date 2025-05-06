@@ -1,0 +1,3 @@
+@echo off
+echo Starting Streamlit frontend...
+streamlit run frontend/ui.py
