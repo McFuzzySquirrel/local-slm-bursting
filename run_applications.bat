@@ -67,7 +67,7 @@ if %MODEL_FOUND% EQU 0 (
 
 REM ===== Start the backend API in a new terminal =====
 echo Starting backend API server...
-start cmd /k "title Local SLM Backend && color 0A && call .venv\Scripts\activate.bat && run_local_api.bat"
+start cmd /k "title Local SLM Backend && color 0A && call .venv\Scripts\activate.bat && python -m uvicorn app.main:app --host localhost --port 8000"
 
 REM ===== Wait for the backend to initialize =====
 echo Waiting for backend to initialize (5 seconds)...
@@ -78,4 +78,5 @@ echo Starting Streamlit frontend...
 echo.
 echo NOTE: When finished, close both terminal windows to shut down the application.
 echo.
-call run_streamlit.bat
+call .venv\Scripts\activate.bat
+streamlit run frontend/ui.py

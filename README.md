@@ -1,272 +1,176 @@
-# Local SLM Bursting
+# Local SLM Bursting Application
 
-A hybrid AI assistant that efficiently routes queries between a locally-running small language model (SLM) and Azure OpenAI, optimizing for performance, cost, and user experience.
+A hybrid solution that runs Small Language Models (SLMs) locally with the ability to "burst" to more powerful cloud models when necessary, providing cost-effective, private, and always-available language model capabilities.
 
-## 🌟 Overview
+## Features
 
-This project demonstrates an intelligent approach to AI deployment by using a local-first strategy with cloud bursting. Simple queries are processed directly on your device using lightweight SLMs via llama.cpp, while complex questions are automatically routed to more powerful Azure OpenAI models.
+- **Local Model Inference**: Run text generation/completion with locally-stored GGUF models
+- **Burst Capability**: Seamlessly switch to cloud models when needed based on configurable criteria
+- **Easy Setup**: Simple batch scripts for Windows environments
+- **Streamlit UI**: Intuitive interface for interacting with models
+- **FastAPI Backend**: Efficient API for model management and inference
 
-## ✨ Key Features
-
-- **Hybrid Inference Pipeline**: Smart routing between local and cloud models
-- **Local-First Processing**: Reduce latency and API costs with on-device inference
-- **Intelligent Bursting**: Seamlessly scale to Azure OpenAI for complex queries
-- **Document Intelligence**: Upload, process and query PDF documents
-- **Vector Search**: Use semantic search to find relevant information
-- **Interactive UI**: Clean Streamlit web interface
-
-## 🏗️ Architecture
-
-The system uses a layered architecture with multiple components working together to provide efficient and intelligent query processing:
-
-### Core Components
-
-1. **Frontend Layer**: 
-   - Streamlit web application that provides an intuitive user interface
-   - Handles document uploads and displays interactive query responses
-   - Offers manual controls for routing decisions when needed
-   - Communicates with the backend API using HTTP requests
-
-2. **API Layer**:
-   - FastAPI backend providing RESTful endpoints for all operations
-   - Coordinates the flow between components (document processing, vector search, model selection)
-   - Implements efficient request handling with asynchronous processing
-   - Manages error cases and provides consistent response formats
-
-3. **Inference Layer**:
-   - **Local Inference Engine**:
-     - Uses llama.cpp to run small language models directly on the device
-     - Optimized for efficiency with minimal resource requirements
-     - Handles simple queries without requiring cloud connectivity
-     - Provides fast response times for straightforward questions
-   
-   - **Cloud Inference Engine**:
-     - Integrates with Azure OpenAI service for powerful reasoning capabilities
-     - Follows Azure best practices for secure and reliable API communication
-     - Delivers high-quality responses for complex questions
-     - Scales to handle sophisticated reasoning tasks
-
-4. **Document Intelligence Layer**:
-   - Processes uploaded PDF documents into manageable text chunks
-   - Generates vector embeddings using Sentence Transformers
-   - Stores embeddings in a FAISS vector database for efficient similarity search
-   - Retrieves relevant context based on semantic similarity to queries
-   
-5. **Query Router**:
-   - Analyzes incoming queries to determine appropriate processing path
-   - Uses heuristic rules based on query length, complexity keywords, and structure
-   - Makes intelligent routing decisions to optimize for both performance and quality
-   - Can be manually overridden when specific routing is desired
-
-6. **Storage Layer**:
-   - Maintains uploaded documents in an organized file structure
-   - Persists vector indices for fast retrieval during query processing
-   - Manages configuration settings through environment variables
-
-### Data Flow
-
-The system processes queries through the following steps:
-
-1. User submits a question through the Streamlit UI
-2. The API receives the query and passes it to the Query Router
-3. Query Router analyzes complexity and determines the appropriate model
-4. Vector Store searches for relevant document chunks based on semantic similarity
-5. Selected model (local or Azure) processes the query with retrieved context
-6. Response is formatted with metadata about the source and returned to the user
-7. UI displays the answer along with information about which model generated it
-
-This architecture balances efficiency and capability by processing simple queries locally while seamlessly bursting to cloud resources when needed for more complex questions.
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Python 3.8+
-- Azure OpenAI service access
-- GGUF format language model file
+- Python 3.8+ installed and in PATH
+- Windows operating system
+- Internet connection for initial setup and cloud model bursting
+- 4GB+ RAM (8GB+ recommended for larger models)
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
+1. Clone this repository:
+   ```
    git clone https://github.com/yourusername/local-slm-bursting.git
    cd local-slm-bursting
    ```
 
-2. **Set up a Python virtual environment**
-   ```bash
-   python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # Linux/Mac
-   source venv/bin/activate
+2. Run the setup script:
    ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
+   run_app.bat
    ```
-
-4. **Configure your environment**
-   ```bash
-   # Windows
-   copy .env.example .env
    
-   # Linux/Mac
-   cp .env.example .env
-   ```
+   This script will:
+   - Create a virtual environment (.venv)
+   - Install required dependencies
+   - Create necessary directories
+   - Set up configuration files
+   - Start both backend and frontend
 
-5. **Update the .env file with your settings**
-   - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key
-   - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL
-   - `AZURE_OPENAI_DEPLOYMENT`: Your model deployment name (default: "gpt-4o")
-   - `LOCAL_MODEL_PATH`: Path to your downloaded GGUF model file
+3. Download a GGUF model:
+   - Visit [Hugging Face](https://huggingface.co/models?other=gguf)
+   - Download models like TinyLlama, Phi-2, or Mistral-7B
+   - Place the .gguf file in the `models/` directory
 
-6. **Download a GGUF model**
-   - Get models from [Hugging Face](https://huggingface.co/models?search=gguf)
-   - Recommended options:
-     - [Phi-2](https://huggingface.co/microsoft/phi-2)
-     - [TinyLlama](https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0)
-     - [Mistral-7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)
+### Quick Start (After Initial Setup)
 
-## 🏁 Running the Application
-
-### Option 1: Quick Start (Recommended)
-
-Use the all-in-one launcher script to start both backend and frontend:
-
-```bash
-# Windows
-run_app.bat
-
-# Linux/Mac
-chmod +x run_app.sh  # Make executable (first time only)
-./run_app.sh
+For subsequent runs, use:
+```
+quick_start.bat
 ```
 
-This script will:
-- Check your environment setup
-- Create necessary directories
-- Verify model files
-- Launch the backend API server
-- Start the Streamlit frontend
-- Open your browser automatically
+This script uses the existing virtual environment to start the application.
 
-### Option 2: Manual Start
+## Usage
 
-If you prefer to start components individually:
+1. Select a model from the dropdown in the UI
+2. Adjust generation parameters if needed
+3. Enter your prompt text
+4. Click "Generate" to get a response
+5. The application will use the local model by default and burst to cloud models when needed
 
-1. **Start the API server**
-   ```bash
-   # Windows
-   run_local_api.bat
-   
-   # Linux/Mac
-   python -m uvicorn app.main:app --reload --host localhost --port 8000
-   ```
+## Architecture
 
-2. **Launch the web interface** (in a separate terminal)
-   ```bash
-   # Windows
-   run_streamlit.bat
-   
-   # Linux/Mac
-   streamlit run frontend/ui.py
-   ```
+The Local SLM Bursting application follows a client-server architecture with two main components:
 
-3. **Access the application** at [http://localhost:8501](http://localhost:8501)
+### Backend API (FastAPI)
 
-## 💡 Usage Guide
+- **Model Management**: Dynamically loads and manages local GGUF models using llama.cpp
+- **Inference Engine**: Handles text generation requests with configurable parameters
+- **Burst Controller**: Intelligently decides when to use local models vs. cloud models based on:
+  - Request complexity
+  - Local model capabilities
+  - Response quality requirements
+  - System resource availability
+- **Configuration Service**: Manages application settings and model parameters
+- **API Endpoints**: RESTful endpoints for model interaction and system management
 
-### Document Processing
-1. Upload PDF documents via the sidebar
-2. Documents are automatically parsed and indexed using vector embeddings
-3. Content becomes available for context-aware responses
+### Frontend UI (Streamlit)
 
-### Question Answering
-1. Type your question in the input box
-2. The system determines query complexity using the QueryRouter:
-   - Simple queries → Local SLM
-   - Complex queries → Azure OpenAI
-3. View responses with source attribution and processing details
+- **User Interface**: Intuitive web interface for interacting with models
+- **Request Handler**: Formats and sends requests to the backend API
+- **Response Renderer**: Displays generated text with proper formatting
+- **Settings Manager**: UI controls for adjusting model and system parameters
+- **Monitoring Panel**: Displays system status and current model information
 
-### Manual Routing Control
-Use the "Force routing" radio buttons in the sidebar to manually direct queries to either:
-- Auto (default): Let the system decide
-- Local Model: Force using local SLM
-- Azure GPT: Force using Azure OpenAI
+### Data Flow
 
-## 📦 Dependencies
+1. User inputs prompt and parameters through the Streamlit UI
+2. Request is sent to the FastAPI backend
+3. Backend determines whether to use local or cloud model
+4. Request is processed by the chosen model
+5. Response is returned to the frontend
+6. Generated text is displayed to the user
 
-The project uses the following key libraries:
-- FastAPI and Uvicorn for the backend API
-- llama-cpp-python for local inference
-- Sentence Transformers and FAISS for vector search
-- Streamlit for the web interface
-- MarkItDown for PDF processing
-- Azure libraries for Azure OpenAI integration
+### Bursting Mechanism
 
-## 📂 Project Structure
+The application uses these criteria to decide when to "burst" to cloud models:
+
+- **Token Threshold**: When input/output exceeds local model capacity
+- **Complexity Detection**: When prompt requires capabilities beyond local model
+- **Quality Requirements**: When higher quality is explicitly requested
+- **Resource Monitoring**: When local system resources are constrained
+
+This hybrid approach provides the benefits of both local processing (privacy, availability, lower cost) and cloud models (higher capability, better quality for complex tasks) in a seamless experience.
+
+## Project Structure
 
 ```
 local-slm-bursting/
-│
-├── app/                  # Backend API code
-│   ├── main.py           # FastAPI entry point
-│   ├── local_llm.py      # Local model interface
-│   ├── azure_llm.py      # Azure OpenAI interface
-│   ├── query_router.py   # Query complexity analyzer
-│   ├── document_processor.py # PDF processing
-│   └── vector_store.py   # Vector database interface
-│
-├── frontend/            # User interface
-│   └── ui.py            # Streamlit web app
-│
-├── config/              # Configuration
-│   └── settings.py      # Application settings
-│
-├── models/              # Local model storage
-│   └── [model_file.gguf] # Your downloaded model
-│
-├── data/                # Data storage
-│   ├── uploads/         # Uploaded documents
-│   ├── faiss_index/     # Vector store index
-│   └── chroma_db/       # ChromaDB storage
-│
-├── requirements.txt     # Python dependencies
-├── run_local_api.bat    # Windows API startup script
-├── run_streamlit.bat    # Windows UI startup script
-├── run_app.bat          # Windows all-in-one launcher
-├── run_app.sh           # Linux/Mac all-in-one launcher
-└── README.md            # This documentation
+├── backend/               # FastAPI backend
+│   ├── api/               # API routes
+│   ├── models/            # Model management 
+│   └── utils/             # Utility functions
+├── frontend/              # Streamlit frontend
+├── models/                # GGUF model storage
+├── data/                  # Data storage
+│   └── uploads/           # User uploads
+├── logs/                  # Application logs
+├── .env.example           # Example configuration
+├── requirements.txt       # Python dependencies
+├── run_app.bat            # Main startup script
+├── run_local_api.bat      # Backend starter
+├── run_streamlit.bat      # Frontend starter
+└── quick_start.bat        # Quickstart script
 ```
 
-## 🔧 Configuration Options
+## Configuration
 
-The application's behavior can be configured through the `settings.py` file:
+Edit the `.env` file to configure:
+- API endpoint settings
+- Default model and parameters
+- Cloud model API keys (for bursting)
+- Logging settings
 
-- **API Settings**: Host and port configuration
-- **Document Processing**: Chunk size and overlap for document splitting
-- **Local LLM Settings**: Model path, context size, and generation parameters
-- **Azure LLM Settings**: API keys, endpoints, and model configuration
-- **Query Router Settings**: Word limits and complexity keywords for routing
+## Development
 
-## 🚨 Limitations
+This project is built using GitHub Copilot. Check out these resources:
 
-- Local model performance depends on your hardware capabilities
-- PDF processing may struggle with complex document layouts
-- Query routing is based on heuristics and may not always be optimal
+- [Copilot Instructions](./copilot_instructions.md) - Guidelines for using Copilot with this project
+- [Product Requirements Document](./product_requirements_document.md) - Detailed project specifications
+- [Copilot Agent Tutorial](./copilot_agent_tutorial.md) - Tutorial for building the project with Copilot
 
-## 📄 License
+### Running Individual Components
 
-This project is licensed under the MIT License.
+- Start only the backend: `run_local_api.bat`
+- Start only the frontend: `run_streamlit.bat`
 
-## 🙏 Acknowledgments
+## Troubleshooting
 
-- [llama.cpp](https://github.com/ggerganov/llama.cpp) for local inference
-- [Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/ai-services/openai/) for cloud AI
-- [Sentence Transformers](https://www.sbert.net/) for text embeddings
-- [FastAPI](https://fastapi.tiangolo.com/) for API development
-- [Streamlit](https://streamlit.io/) for the web interface
+### Common Issues
+
+- **"Failed to load model"**: Ensure a GGUF model is placed in the models/ directory
+- **Backend connection error**: Check if the backend API is running on the configured port
+- **Memory errors**: Try a smaller model or adjust memory settings in the .env file
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Llama.cpp](https://github.com/ggerganov/llama.cpp) for local model inference
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend framework
+- [Streamlit](https://streamlit.io/) for the frontend UI
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
